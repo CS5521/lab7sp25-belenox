@@ -4,6 +4,11 @@
 #include "user.h"
 #include "x86.h"
 
+void ps(){
+  
+ //  pstatTable * pst = getpinfo
+}
+
 char*
 strcpy(char *s, const char *t)
 {

@@ -1,6 +1,7 @@
 #include "types.h"
 #include "defs.h"
 #include "param.h"
+#include "pstat.h"
 #include "memlayout.h"
 #include "mmu.h"
 #include "x86.h"
@@ -19,6 +20,30 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+
+void fillpstat(pstatTable * pstat){
+  acquire(&ptable.lock);
+
+  int i;
+  int j;
+  for(i = 0; i < NPROC; i++){
+    struct proc* p = &(ptable.proc[i]);
+    if (p->state == UNUSED) (*pstat)[i].inuse = 0;
+    else (*pstat)[i].inuse = 1;
+    (*pstat)[i].tickets = p->tickets;
+    (*pstat)[i].pid = p->pid;
+    (*pstat)[i].ticks = p->ticks;
+    for (j = 0; j < 16; j++)
+      (*pstat)[i].name[j] = p->name[j];
+    if (p->state == EMBRYO) (*pstat)[i].state = 'E';
+    if (p->state == SLEEPING) (*pstat)[i].state = 'R';
+    if (p->state == RUNNABLE) (*pstat)[i].state = 'A';
+    if (p->state == RUNNING) (*pstat)[i].state = 'S';
+    if (p->state == ZOMBIE) (*pstat)[i].state = 'Z';
+  }
+  release(&ptable.lock);
+
+}
 
 void
 pinit(void)
@@ -141,7 +166,8 @@ userinit(void)
 
   safestrcpy(p->name, "initcode", sizeof(p->name));
   p->cwd = namei("/");
-
+  p->tickets = 10;
+  p->ticks = 0;
   // this assignment to p->state lets other cores
   // run this process. the acquire forces the above
   // writes to be visible, and the lock is also needed
@@ -196,6 +222,10 @@ fork(void)
     np->state = UNUSED;
     return -1;
   }
+  np->ticks = 0;
+  np->tickets = 10;
+  if (curproc->tickets > 10) np->tickets = curproc->tickets;
+
   np->sz = curproc->sz;
   np->parent = curproc;
   *np->tf = *curproc->tf;
