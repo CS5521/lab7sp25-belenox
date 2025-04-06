@@ -3,10 +3,25 @@
 #include "fcntl.h"
 #include "user.h"
 #include "x86.h"
+#include "param.h"
+#include "pstat.h"
 
 void ps(){
   
- //  pstatTable * pst = getpinfo
+  //pstatTable pst = malloc(NPROC * sizeof(pstat_t));
+  pstat_t pst[NPROC];
+  getpinfo(&pst);
+  int i;
+  for (i = 0; i < NPROC; i++){
+    if (pst[i].inuse == 1){
+      printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
+      printf(1, "%d\t", pst[i].pid);
+      printf(1, "%d\t", pst[i].tickets);
+      printf(1, "%d\t", pst[i].ticks);
+      printf(1, "%c\t", pst[i].state);
+      printf(1, "%s\t\n", pst[i].name);
+    }
+  }
 }
 
 char*

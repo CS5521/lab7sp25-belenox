@@ -8,6 +8,7 @@
 #include "proc.h"
 #include "spinlock.h"
 
+
 struct {
   struct spinlock lock;
   struct proc proc[NPROC];
@@ -20,6 +21,25 @@ extern void forkret(void);
 extern void trapret(void);
 
 static void wakeup1(void *chan);
+
+int setproctickets(int pid, int tickets){
+  if (tickets < 10) return -1;
+  acquire(&ptable.lock);
+
+  int i;
+  for (i = 0; i < NPROC; i++){
+    struct proc* p = &(ptable.proc[i]);
+    if (p->state == UNUSED) continue;
+    if (p->pid == pid){
+      p->tickets = tickets;
+      release(&ptable.lock);
+      return 0;
+    }
+  }
+  
+  release(&ptable.lock);
+  return -1;
+}
 
 void fillpstat(pstatTable * pstat){
   acquire(&ptable.lock);

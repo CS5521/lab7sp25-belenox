@@ -96,11 +96,24 @@ extern void fillpstat(pstatTable *);
 int
 sys_getpinfo(void)
 {
-  pstat_t* ptr;
-  
-  if(argptr(0, (char**) &ptr, sizeof(pstat_t)) < 0)
+  pstatTable* ptr;
+   
+  if(argptr(0, (char**) &ptr, sizeof(ptr)) < 0)
     return -1;
   
-  fillpstat((pstatTable*) &ptr);
+  fillpstat((pstatTable*) ptr);
+  
   return 0;
+}
+
+extern int setproctickets(int pid, int tickets);
+
+int 
+sys_settickets(void)
+{
+  int ntickets;
+
+  if (argint(0, &ntickets) < 0) return -1;
+
+  return setproctickets(sys_getpid(), ntickets);
 }
