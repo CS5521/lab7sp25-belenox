@@ -8,6 +8,12 @@
 #include "proc.h"
 #include "spinlock.h"
 
+#define RAND_MAX ((1U << 31) - 1)
+static int rseed = 1898888478;
+int random()
+{
+  return rseed = (rseed * 1103515245 + 12345) & RAND_MAX;
+}
 
 struct {
   struct spinlock lock;
@@ -375,7 +381,39 @@ scheduler(void)
   struct proc *p;
   struct cpu *c = mycpu();
   c->proc = 0;
-  
+
+  int ntickets;
+  int counter;
+  int winner;
+  for(;;){
+    sti();
+    acquire(&ptable.lock);
+    // Add up all the tickets for runnable processes
+    ntickets = 0;
+    for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+      if (p->state == RUNNABLE) ntickets += p->tickets;
+    }
+    // If no runnable processes, loop
+    if (ntickets > 0) {
+      // determine the winning process
+      counter = 0;
+      winner = random() % ntickets;
+      for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
+        counter += p->tickets;
+        if (counter > winner) break;
+      }
+      // switch to the winning process
+      c->proc = p;
+      switchuvm(p);
+      p->state = RUNNING;
+      swtch(&(c->scheduler), p->context);
+      switchkvm();
+
+      c->proc = 0;
+    }
+    release(&ptable.lock);
+  }
+  /* 
   for(;;){
     // Enable interrupts on this processor.
     sti();
@@ -402,7 +440,8 @@ scheduler(void)
     }
     release(&ptable.lock);
 
-  }
+  }*/
+  
 }
 
 // Enter scheduler.  Must hold only ptable.lock
