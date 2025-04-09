@@ -62,9 +62,9 @@ void fillpstat(pstatTable * pstat){
     for (j = 0; j < 16; j++)
       (*pstat)[i].name[j] = p->name[j];
     if (p->state == EMBRYO) (*pstat)[i].state = 'E';
-    if (p->state == SLEEPING) (*pstat)[i].state = 'R';
+    if (p->state == RUNNING) (*pstat)[i].state = 'R';
     if (p->state == RUNNABLE) (*pstat)[i].state = 'A';
-    if (p->state == RUNNING) (*pstat)[i].state = 'S';
+    if (p->state == SLEEPING) (*pstat)[i].state = 'S';
     if (p->state == ZOMBIE) (*pstat)[i].state = 'Z';
   }
   release(&ptable.lock);
@@ -399,11 +399,13 @@ scheduler(void)
       counter = 0;
       winner = random() % ntickets;
       for (p = ptable.proc; p < &ptable.proc[NPROC]; p++){
-        counter += p->tickets;
+        if (p->state == RUNNABLE)
+          counter += p->tickets;
         if (counter > winner) break;
       }
       // switch to the winning process
       c->proc = p;
+      p->ticks++;
       switchuvm(p);
       p->state = RUNNING;
       swtch(&(c->scheduler), p->context);

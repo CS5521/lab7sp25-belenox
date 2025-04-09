@@ -5924,26 +5924,26 @@ void ps(){
     3db9:	89 04 24             	mov    %eax,(%esp)
     3dbc:	e8 36 04 00 00       	call   41f7 <getpinfo>
   int i;
+  printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
+    3dc1:	c7 44 24 04 de 5e 00 	movl   $0x5ede,0x4(%esp)
+    3dc8:	00 
+    3dc9:	c7 04 24 01 00 00 00 	movl   $0x1,(%esp)
+    3dd0:	e8 12 05 00 00       	call   42e7 <printf>
   for (i = 0; i < NPROC; i++){
-    3dc1:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%ebp)
-    3dc8:	e9 32 01 00 00       	jmp    3eff <ps+0x158>
+    3dd5:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%ebp)
+    3ddc:	e9 1e 01 00 00       	jmp    3eff <ps+0x158>
     if (pst[i].inuse == 1){
-    3dcd:	8b 55 e4             	mov    -0x1c(%ebp),%edx
-    3dd0:	89 d0                	mov    %edx,%eax
-    3dd2:	c1 e0 03             	shl    $0x3,%eax
-    3dd5:	01 d0                	add    %edx,%eax
-    3dd7:	c1 e0 02             	shl    $0x2,%eax
-    3dda:	8d 5d e8             	lea    -0x18(%ebp),%ebx
-    3ddd:	01 d8                	add    %ebx,%eax
-    3ddf:	2d 04 09 00 00       	sub    $0x904,%eax
-    3de4:	8b 00                	mov    (%eax),%eax
-    3de6:	83 f8 01             	cmp    $0x1,%eax
-    3de9:	0f 85 0c 01 00 00    	jne    3efb <ps+0x154>
-      printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
-    3def:	c7 44 24 04 de 5e 00 	movl   $0x5ede,0x4(%esp)
-    3df6:	00 
-    3df7:	c7 04 24 01 00 00 00 	movl   $0x1,(%esp)
-    3dfe:	e8 e4 04 00 00       	call   42e7 <printf>
+    3de1:	8b 55 e4             	mov    -0x1c(%ebp),%edx
+    3de4:	89 d0                	mov    %edx,%eax
+    3de6:	c1 e0 03             	shl    $0x3,%eax
+    3de9:	01 d0                	add    %edx,%eax
+    3deb:	c1 e0 02             	shl    $0x2,%eax
+    3dee:	8d 5d e8             	lea    -0x18(%ebp),%ebx
+    3df1:	01 d8                	add    %ebx,%eax
+    3df3:	2d 04 09 00 00       	sub    $0x904,%eax
+    3df8:	8b 00                	mov    (%eax),%eax
+    3dfa:	83 f8 01             	cmp    $0x1,%eax
+    3dfd:	0f 85 f8 00 00 00    	jne    3efb <ps+0x154>
       printf(1, "%d\t", pst[i].pid);
     3e03:	8b 55 e4             	mov    -0x1c(%ebp),%edx
     3e06:	89 d0                	mov    %edx,%eax
@@ -6022,7 +6022,7 @@ void ps(){
   for (i = 0; i < NPROC; i++){
     3efb:	83 45 e4 01          	addl   $0x1,-0x1c(%ebp)
     3eff:	83 7d e4 3f          	cmpl   $0x3f,-0x1c(%ebp)
-    3f03:	0f 8e c4 fe ff ff    	jle    3dcd <ps+0x26>
+    3f03:	0f 8e d8 fe ff ff    	jle    3de1 <ps+0x3a>
     }
   }
 }

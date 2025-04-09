@@ -4,18 +4,22 @@
 int main(int argc, char *argv[]) {
     if (argc < 2){
         printf(1, "usage: schedtest loops tickets1 [ tickets2 ... ticketsN ]");
+        exit();
     }
     int i;
-    int outputnum = atoi(argv[0]);
-    int pidarr[argc - 1];
-    for (i = 0; i < argc - 1; i++) {
-        int ntickets = atoi(argv[i + 1]);
-        pidarr[i] = fork();
-        if (pidarr[i] == 0){
+    int outputnum = atoi(argv[1]);
+    int pidarr[argc - 2];
+    for (i = 0; i < argc - 2; i++) {
+        int ntickets = atoi(argv[i + 2]);
+        int p = fork();
+        if (p == 0){
             settickets(ntickets);
             while(1);
+        } else {
+            pidarr[i] = p;
         }
     }
+    printf(1, "outputnum: %d", argc);
     for (i = 0; i < outputnum; i++){
         ps();
         sleep(3);
@@ -29,5 +33,5 @@ int main(int argc, char *argv[]) {
         wait();
     }
 
-    return 0;
+    exit();
 }

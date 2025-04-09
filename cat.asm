@@ -185,26 +185,26 @@ void ps(){
  172:	89 04 24             	mov    %eax,(%esp)
  175:	e8 36 04 00 00       	call   5b0 <getpinfo>
   int i;
+  printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
+ 17a:	c7 44 24 04 a4 0a 00 	movl   $0xaa4,0x4(%esp)
+ 181:	00 
+ 182:	c7 04 24 01 00 00 00 	movl   $0x1,(%esp)
+ 189:	e8 12 05 00 00       	call   6a0 <printf>
   for (i = 0; i < NPROC; i++){
- 17a:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%ebp)
- 181:	e9 32 01 00 00       	jmp    2b8 <ps+0x158>
+ 18e:	c7 45 e4 00 00 00 00 	movl   $0x0,-0x1c(%ebp)
+ 195:	e9 1e 01 00 00       	jmp    2b8 <ps+0x158>
     if (pst[i].inuse == 1){
- 186:	8b 55 e4             	mov    -0x1c(%ebp),%edx
- 189:	89 d0                	mov    %edx,%eax
- 18b:	c1 e0 03             	shl    $0x3,%eax
- 18e:	01 d0                	add    %edx,%eax
- 190:	c1 e0 02             	shl    $0x2,%eax
- 193:	8d 5d e8             	lea    -0x18(%ebp),%ebx
- 196:	01 d8                	add    %ebx,%eax
- 198:	2d 04 09 00 00       	sub    $0x904,%eax
- 19d:	8b 00                	mov    (%eax),%eax
- 19f:	83 f8 01             	cmp    $0x1,%eax
- 1a2:	0f 85 0c 01 00 00    	jne    2b4 <ps+0x154>
-      printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
- 1a8:	c7 44 24 04 a4 0a 00 	movl   $0xaa4,0x4(%esp)
- 1af:	00 
- 1b0:	c7 04 24 01 00 00 00 	movl   $0x1,(%esp)
- 1b7:	e8 e4 04 00 00       	call   6a0 <printf>
+ 19a:	8b 55 e4             	mov    -0x1c(%ebp),%edx
+ 19d:	89 d0                	mov    %edx,%eax
+ 19f:	c1 e0 03             	shl    $0x3,%eax
+ 1a2:	01 d0                	add    %edx,%eax
+ 1a4:	c1 e0 02             	shl    $0x2,%eax
+ 1a7:	8d 5d e8             	lea    -0x18(%ebp),%ebx
+ 1aa:	01 d8                	add    %ebx,%eax
+ 1ac:	2d 04 09 00 00       	sub    $0x904,%eax
+ 1b1:	8b 00                	mov    (%eax),%eax
+ 1b3:	83 f8 01             	cmp    $0x1,%eax
+ 1b6:	0f 85 f8 00 00 00    	jne    2b4 <ps+0x154>
       printf(1, "%d\t", pst[i].pid);
  1bc:	8b 55 e4             	mov    -0x1c(%ebp),%edx
  1bf:	89 d0                	mov    %edx,%eax
@@ -283,7 +283,7 @@ void ps(){
   for (i = 0; i < NPROC; i++){
  2b4:	83 45 e4 01          	addl   $0x1,-0x1c(%ebp)
  2b8:	83 7d e4 3f          	cmpl   $0x3f,-0x1c(%ebp)
- 2bc:	0f 8e c4 fe ff ff    	jle    186 <ps+0x26>
+ 2bc:	0f 8e d8 fe ff ff    	jle    19a <ps+0x3a>
     }
   }
 }

@@ -12,9 +12,9 @@ void ps(){
   pstat_t pst[NPROC];
   getpinfo(&pst);
   int i;
+  printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
   for (i = 0; i < NPROC; i++){
     if (pst[i].inuse == 1){
-      printf(1, "PID\tTKTS\tTCKS\tSTAT\tNAME\n");
       printf(1, "%d\t", pst[i].pid);
       printf(1, "%d\t", pst[i].tickets);
       printf(1, "%d\t", pst[i].ticks);
